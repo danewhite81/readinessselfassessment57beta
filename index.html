@@ -1,0 +1,680 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ag Leadership Readiness Check</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+body { margin: 0; }
+[hidden] { display: none !important; }
+/* Layout: one narrow working column. A thin section rail on top, one section per screen, results as a plain-language picture plus a guided reflection. */
+:root {
+  --bg: #F1F4EE;
+  --surface: #FFFFFF;
+  --ink: #1B2720;
+  --muted: #56655B;
+  --line: #D3DBD0;
+  --accent: #2C6A3D;
+  --accent-ink: #FFFFFF;
+  --accent-soft: #E0EEE2;
+  --warn: #8F5600;
+  --warn-soft: #F7EBD0;
+  --bad: #A23B2D;
+  --bad-soft: #F6DED9;
+  --font-display: "Bricolage Grotesque", "Trebuchet MS", system-ui, sans-serif;
+  --font-body: "Source Sans 3", "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #101712; --surface: #18221B; --ink: #E5EDE6; --muted: #9AAA9E; --line: #2B392F;
+    --accent: #72C189; --accent-ink: #0D1A11; --accent-soft: #1E3325;
+    --warn: #E3AC52; --warn-soft: #382B18; --bad: #E8927F; --bad-soft: #3B2420;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #101712; --surface: #18221B; --ink: #E5EDE6; --muted: #9AAA9E; --line: #2B392F;
+  --accent: #72C189; --accent-ink: #0D1A11; --accent-soft: #1E3325;
+  --warn: #E3AC52; --warn-soft: #382B18; --bad: #E8927F; --bad-soft: #3B2420;
+  color-scheme: dark;
+}
+body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 17px; line-height: 1.5; }
+* { box-sizing: border-box; }
+.wrap { max-width: 44rem; margin-inline: auto; padding-inline: 16px; padding-block: 20px 56px; }
+h1, h2, h3 { font-family: var(--font-display); line-height: 1.15; text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(1.9rem, 6vw, 2.6rem); font-weight: 700; letter-spacing: -0.01em; }
+h2 { font-size: clamp(1.4rem, 4.5vw, 1.8rem); font-weight: 700; }
+h3 { font-size: 1.1rem; font-weight: 700; }
+p { margin: 0; }
+.muted { color: var(--muted); }
+.eyebrow { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: var(--accent); }
+.beta { display: inline-block; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; border: 1px solid var(--line); border-radius: 999px; padding: 2px 10px; color: var(--muted); margin-left: 8px; vertical-align: middle; }
+.stack { display: flex; flex-direction: column; gap: 20px; }
+.stack-sm { display: flex; flex-direction: column; gap: 10px; }
+
+/* progress rail */
+.rail { display: grid; grid-template-columns: repeat(8, 1fr); gap: 4px; margin-block: 18px 8px; }
+.rail span { height: 6px; border-radius: 3px; background: var(--line); }
+.rail span.done { background: var(--accent); }
+.rail span.now { background: var(--ink); }
+.railnote { font-size: 0.88rem; color: var(--muted); display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 22px 20px; }
+.notice { border-radius: 8px; padding: 14px 16px; background: var(--accent-soft); }
+.notice.warn { background: var(--warn-soft); }
+.notice.bad { background: var(--bad-soft); }
+.notice strong { display: block; margin-bottom: 2px; }
+
+/* questions */
+fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
+.q { padding-block: 18px; border-top: 1px solid var(--line); }
+.q:first-child { border-top: 0; padding-top: 0; }
+.q legend { font-weight: 600; padding: 0; margin-bottom: 12px; }
+.help { font-size: 0.92rem; color: var(--muted); font-weight: 400; display: block; margin-top: 2px; }
+.scale { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.scale input, .choices input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.scale label { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-height: 52px; font-weight: 600; padding: 6px 2px; border: 1.5px solid var(--line); border-radius: 8px; cursor: pointer; font-size: 0.78rem; text-align: center; color: var(--muted); background: var(--bg); }
+.scale label b { font-family: var(--font-display); font-size: 1.25rem; color: var(--ink); line-height: 1; }
+.scale label:hover, .choices label:hover { border-color: var(--accent); }
+.scale input:checked + label { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.scale input:checked + label b { color: var(--accent-ink); }
+.scale input:focus-visible + label, .choices input:focus-visible + label, .btn:focus-visible, a:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+.choices { display: flex; flex-direction: column; gap: 8px; }
+.choices label { display: block; padding: 12px 14px; border: 1.5px solid var(--line); border-radius: 8px; cursor: pointer; background: var(--bg); }
+.choices input:checked + label { border-color: var(--accent); background: var(--accent-soft); box-shadow: inset 0 0 0 1px var(--accent); font-weight: 600; }
+
+/* buttons */
+.nav { display: flex; gap: 12px; justify-content: space-between; align-items: center; flex-wrap: wrap; margin-top: 4px; }
+.btn { font: inherit; font-weight: 700; border-radius: 8px; padding: 12px 22px; border: 1.5px solid var(--accent); background: var(--accent); color: var(--accent-ink); cursor: pointer; }
+.btn.ghost { background: transparent; color: var(--ink); border-color: var(--line); }
+.btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.count { font-size: 0.9rem; color: var(--muted); }
+
+/* results */
+.verdict { font-family: var(--font-display); font-weight: 700; font-size: 1.35rem; text-wrap: balance; }
+.steps { display: flex; flex-direction: column; gap: 12px; }
+.step { border-left: 3px solid var(--accent); padding: 2px 0 2px 14px; }
+.when { display: block; font-size: 0.74rem; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; color: var(--accent); margin-bottom: 2px; }
+.step.warn .when { color: var(--warn); }
+.step p { color: var(--muted); }
+.step p a, .step p .res { color: var(--ink); font-weight: 600; }
+.step.warn { border-color: var(--warn); }
+.res small { font-weight: 400; color: var(--muted); }
+.share { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+textarea#summary { width: 100%; min-height: 9rem; font: inherit; font-size: 0.9rem; background: var(--bg); color: var(--ink); border: 1px solid var(--line); border-radius: 8px; padding: 10px; }
+.dots { display: inline-flex; gap: 4px; align-items: center; }
+.dots i { width: 10px; height: 10px; border-radius: 50%; border: 1.5px solid var(--accent); display: block; }
+.dots i.on { background: var(--accent); }
+.picture { display: flex; flex-direction: column; gap: 18px; }
+.prow { display: flex; flex-direction: column; gap: 6px; padding-top: 16px; border-top: 1px solid var(--line); }
+.prow:first-child { border-top: 0; padding-top: 0; }
+.prow .top { display: flex; justify-content: space-between; align-items: baseline; gap: 6px 16px; flex-wrap: wrap; }
+.prow .nm { font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; min-width: 0; }
+.prow .lv { display: inline-flex; align-items: center; gap: 8px; font-size: 0.9rem; font-weight: 600; color: var(--accent); }
+.prow ul { margin: 0; padding-left: 1.1rem; color: var(--muted); display: flex; flex-direction: column; gap: 4px; }
+.prow .ok { color: var(--muted); }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { font: inherit; font-size: 0.9rem; font-weight: 600; padding: 8px 14px; border-radius: 999px; border: 1.5px solid var(--line); background: var(--bg); color: var(--ink); cursor: pointer; text-align: left; }
+.chip small { display: block; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); }
+.chip:hover { border-color: var(--accent); }
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.chip[aria-pressed="true"] small { color: var(--accent-ink); }
+.chip:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+.stages { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 16px; }
+.stage p { color: var(--muted); margin-top: 4px; }
+.stage h3 { display: flex; align-items: center; gap: 10px; }
+.st { display: inline-grid; place-items: center; flex: none; width: 1.7rem; height: 1.7rem; border-radius: 50%; background: var(--accent-soft); color: var(--accent); font-size: 0.85rem; }
+.fine { font-size: 0.86rem; color: var(--muted); }
+@media (max-width: 420px) { .panel { padding: 18px 14px; } }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Ag Leadership <span class="beta">Beta</span></p>
+    <h1>Readiness Check</h1>
+  </header>
+  <div id="rail-holder"></div>
+  <main id="main" class="stack" tabindex="-1"></main>
+</div>
+
+<script>
+/* ============================================================
+   CONFIG: edit this block. Links left as null show as plain text.
+   ============================================================ */
+const CONFIG = {
+  passScore: 0.60,         // internal only: overall average (share of the 5 point maximum) that tips the message to "apply this year". Never shown.
+  cautionDomain: 0.40,     // a domain below this gets a specific heads up, even when the overall score passes
+  programMonths: 17,
+  resources: {
+    prework: { label: "the prework course", url: null },
+    events:  { label: "a prospective applicant event", url: null },
+    mentor:  { label: "an alumni mentor", url: null },
+    contact: { label: "the program office", url: null, email: null }
+  }
+};
+
+/* ============================================================
+   ELIGIBILITY: add or edit questions here.
+   status: ok = meets requirement, short = does not meet, unsure = needs a human to confirm
+   ============================================================ */
+const ELIGIBILITY = [
+  {
+    id: "ca", text: "Have you lived in California for at least one year?",
+    help: "",
+    short: "You answered that you have lived in California for less than one year.",
+    options: [
+      { label: "Yes", status: "ok" },
+      { label: "Not yet", status: "short" },
+      { label: "I am not sure how this applies to me", status: "unsure" }
+    ]
+  },
+  {
+    id: "ag", text: "How many years have you worked in agriculture professionally?",
+    help: "Count paid work or work running your own operation in agriculture or a closely related field.",
+    short: "You answered that you have fewer than 5 years of professional agriculture experience.",
+    options: [
+      { label: "5 or more years", status: "ok" },
+      { label: "3 to 4 years", status: "short" },
+      { label: "Fewer than 3 years", status: "short" },
+      { label: "I am not sure whether my experience counts", status: "unsure" }
+    ]
+  }
+];
+
+/* ============================================================
+   READINESS ITEMS: one statement per scored rubric sub-indicator
+   ============================================================ */
+const SCALE = ["Not really", "A little", "Somewhat", "Mostly", "Very much"]; // stored as 1 to 5 internally, never shown
+const DOMAINS = [
+  { id: "d1", name: "Curiosity & Desire for Growth",
+    blurb: "How you respond when your ideas or circumstances are challenged.",
+    story: "a time something you felt sure about turned out to be incomplete",
+    build: "Take on one thing this year that you are not already good at, such as a new role, a course or a project outside your usual circle. Write down what it changed in your thinking.",
+    items: [
+      { id: "1a", t: "In the past year or two, I have changed my mind about something that mattered to me.", h: "It could be about your work, a practice, a person or an assumption. Big or small." },
+      { id: "1b", t: "When something changes around me, I tend to get curious about what it might teach me.", h: "Such as weather, markets, regulations, a new boss or a new way of doing things." },
+      { id: "1c", t: "I have been trying to learn something new that stretches me a little.", h: "A skill, a tool, a role or a subject. It does not need to be work related." }
+    ] },
+  { id: "d2", name: "Purposeful Approach & Follow-Through",
+    blurb: "How you work toward what matters to you.",
+    story: "a goal you pursued and what you did to follow through",
+    build: "Pick one goal that matters to you and write down the steps and dates. Check in on it monthly and keep notes on what you adjusted and why.",
+    items: [
+      { id: "2a", t: "When something matters to me, I tend to make a plan and keep working at it.", h: "Think of something you wanted over the past year or two, personal or professional." },
+      { id: "2b", t: "I like to plan, and I can change course when things do not go as expected.", h: "For example, a season, a project or a family plan that shifted." },
+      { id: "2c", t: "People who know me would say I follow through on what I say I will do.", h: "Think of coworkers, family or neighbors, and how they might describe you." }
+    ] },
+  { id: "d3", name: "Positive Engagement & Collaborative Spirit",
+    blurb: "How you connect and work with other people.",
+    story: "a time you helped a person or a group see something differently",
+    build: "Spend time with people who see your industry differently than you do. Ask questions before offering opinions, and notice what you learn.",
+    items: [
+      { id: "3a", t: "I have people in my life I can be honest with, and who can be honest with me.", h: "Relationships where you can talk about real things, including hard ones." },
+      { id: "3b", t: "When I talk with someone who sees things very differently, I tend to listen to understand.", h: "About a practice, a policy or a value. Think of how you usually respond, not how you wish you did." },
+      { id: "3c", t: "When I work in a group, I tend to make room for others to contribute.", h: "For example, inviting quieter people in or sharing credit." },
+      { id: "3d", t: "I have helped someone see a situation from a new angle.", h: "A coworker, a family member or a friend. Small moments count." }
+    ] },
+  { id: "d4", name: "Resilience & Emotional Balance",
+    blurb: "How you handle pressure, feedback and your own habits.",
+    story: "a setback and what you changed because of it",
+    build: "After your next hard week or piece of feedback, write down what happened, how you responded and what you would change. Ask a trusted colleague for candid input on a strength you lean on heavily.",
+    items: [
+      { id: "4a", t: "When things get stressful, I can usually keep my head enough to make decent decisions.", h: "Think of a hard season or a tense moment. It does not have to have gone perfectly." },
+      { id: "4b", t: "I have thought about how one of my strengths might sometimes get in my way.", h: "For example, being very independent, very driven or very careful. It is about how willing you are to look at it." },
+      { id: "4c", t: "I try to be caring toward people while still holding high standards.", h: "For others and for yourself." }
+    ] },
+  { id: "d5", name: "Potential for Transformational Impact",
+    blurb: "How you contribute beyond your own work. Early in your career, small and steady examples count.",
+    story: "a time you contributed to something beyond your own interests",
+    build: "Find one place beyond your own operation where you can contribute regularly, such as a board, commodity group, school program or local project. Small and sustained counts.",
+    items: [
+      { id: "5a", t: "I take part in something beyond my own job or operation.", h: "Such as a board, a school or church group, a commodity group, volunteering or helping neighbors." },
+      { id: "5b", t: "I have given time or effort to something that mostly benefited others.", h: "Something where you did not need recognition or a return." },
+      { id: "5c", t: "I am in, or working toward, a position where I can influence how things are done in my industry or community.", h: "Formal or informal. A crew lead, a mentor or a committee member all count." }
+    ] },
+  { id: "d6", name: "Life & Work Timing",
+    blurb: "Whether this fits your life right now.",
+    story: "a time you took on a big commitment and had to make room for it",
+    build: "Map the next " + CONFIG.programMonths + " months on a calendar. Note what you would need to move, hand off or say no to, and talk it through with the people it affects.",
+    items: [
+      { id: "6a", t: "I have a sense of what I would need to adjust in my schedule and work to take part fully.", h: "A rough idea is fine. This is about starting to think it through." },
+      { id: "6c", t: "I have thought about how I would balance the program with work and family.", h: "Including who you would want to talk with first." }
+    ] }
+];
+
+const TIPS = {
+  "1a": "You might notice the next time someone challenges your view. Pause and wonder what they see that you do not, and jot down whether your thinking shifts.",
+  "1b": "When something changes at work, it can help to write down one thing it is teaching you before deciding how you feel about it.",
+  "1c": "You could choose one skill that stretches you and give it a little time each week, even 30 minutes, for a couple of months.",
+  "2a": "You could pick one goal, break it into a few steps with rough dates, and tell someone who will ask how it is going.",
+  "2b": "The next time a plan changes, it can help to write down what you adjusted and what you kept. That is the skill in action.",
+  "2c": "One idea is to choose a small commitment this month and see it through exactly as promised, then notice how that lands with others.",
+  "3a": "You might invite one colleague into a more open conversation. Sharing something real first, then listening without trying to fix, often helps.",
+  "3b": "You could seek out someone who sees your industry differently and spend the first ten minutes just asking questions.",
+  "3c": "At your next group meeting, you might draw out one quiet voice and give credit to someone else by name.",
+  "3d": "When someone seems stuck on one way of seeing a problem, you could try offering a question instead of an answer.",
+  "4a": "You might notice your first reaction under pressure, then try one slow breath and one clarifying question before acting.",
+  "4b": "You could ask someone you trust, \"What is a strength of mine that sometimes gets in my way?\" and listen for the pattern.",
+  "4c": "Before giving feedback, you might name what the other person could be feeling, then state the standard clearly and kindly.",
+  "5a": "You could look for one local board, group or project that could use help and offer a set amount of time each month.",
+  "5b": "One idea is to do something this season for someone with no credit or benefit to you, and write down what it meant.",
+  "5c": "You might look at where your role already gives you influence, such as a crew, co-op or association, and think of one way to use it for others.",
+  "6a": "You could lay out the next " + CONFIG.programMonths + " months on a calendar and mark what would need to move, be handed off or pause.",
+  "6c": "You might ask the people at home and at work what they would need from you to make this work, and share what you would need from them."
+};
+const LENS = {
+  d1: "What made it easy or hard to hold your first view loosely?",
+  d2: "Where did your plan hold up, and where did it slip?",
+  d3: "How might the other people involved tell this same story?",
+  d4: "What did the pressure bring out in you, and how did your strengths help or get in the way?",
+  d5: "What drew you in, and who benefited beyond you?",
+  d6: "What did you have to give up or hand off, and who felt that?"
+};
+DOMAINS.forEach(d => { d.lens = LENS[d.id]; d.items.forEach(i => { i.tip = TIPS[i.id]; }); });
+
+const STAGES = [
+  { k: "Description", q: d => `What happened? Think of ${d.story}. Write the plain facts: where you were, who was involved, what you did and what happened next. Hold off on judging it for now.` },
+  { k: "Feelings", q: () => "What were you thinking and feeling before, during and after? Name the feelings honestly, including the uncomfortable ones. Did any of them surprise you?" },
+  { k: "Evaluation", q: () => "What went well, and what did not? Be specific about your own part in each, and give yourself credit where it is due." },
+  { k: "Analysis", q: d => `Why did it go the way it did? Look at your habits, the other people and the situation. ${d.lens}` },
+  { k: "Conclusion", q: () => "What did you learn about yourself and about working with others? What could you have done differently?" },
+  { k: "Action plan", q: d => `If this came up again, what would you do? Choose one small step to try in the next month. A place to start: ${d.build}` }
+];
+
+/* Unscored: employer and family support (the application requires a signature from each) */
+const SUPPORT = [
+  { id: "emp", text: "Does your employer (or your business partners, if you run your own operation) support you applying?" },
+  { id: "fam", text: "Does your family support you applying?" }
+];
+const SUPPORT_OPTS = [
+  { v: "yes", label: "Yes, we have talked and they support it" },
+  { v: "plan", label: "Not yet, but I plan to talk with them" },
+  { v: "unsure", label: "I am not sure they would support it" }
+];
+
+/* ============================================================
+   STATE AND HELPERS
+   ============================================================ */
+const STEPS = ["intro", "elig", ...DOMAINS.map(d => d.id), "support", "results"];
+const SECTION_NAMES = ["Eligibility", ...DOMAINS.map(d => d.name), "Before you apply"];
+const state = { step: 0, a: {}, practice: false, inelig: false, focus: null, order: [] };
+
+const $ = s => document.querySelector(s);
+function link(r, fallbackText) {
+  const text = fallbackText || r.label;
+  return r.url ? `<a href="${r.url}" target="_blank" rel="noopener">${text}</a>`
+               : `<span class="res">${text} <small>(link to be added)</small></span>`;
+}
+function contactLine() {
+  const c = CONFIG.resources.contact;
+  return c.email ? `${link(c, "the program office")} at <span style="user-select:all">${c.email}</span>` : link(c, "the program office");
+}
+
+function eligibilityOutcome() {
+  const picks = ELIGIBILITY.map(q => {
+    const i = state.a["e_" + q.id];
+    return i === undefined ? null : { q, opt: q.options[i] };
+  });
+  const shorts = picks.filter(p => p && p.opt.status === "short");
+  const unsures = picks.filter(p => p && p.opt.status === "unsure");
+  return { shorts, unsures, status: shorts.length ? "short" : unsures.length ? "unsure" : "ok" };
+}
+
+/* Scores stay internal. Nothing numeric is shown to the applicant. */
+function scores() {
+  const dom = DOMAINS.map(d => {
+    const vals = d.items.map(i => state.a[i.id]);
+    const avg = vals.reduce((t, v) => t + v, 0) / vals.length / 5;
+    return { d, avg };
+  });
+  const overall = dom.reduce((t, x) => t + x.avg, 0) / dom.length;
+  return { dom, overall };
+}
+const LEVEL_LABEL = { 3: "Well established", 2: "Taking shape", 1: "Room to grow" };
+function level(x) { return x >= 0.8 ? 3 : x >= CONFIG.passScore ? 2 : 1; }
+function dots(l) { return `<span class="dots" aria-hidden="true">${[1, 2, 3].map(i => `<i class="${i <= l ? "on" : ""}"></i>`).join("")}</span>`; }
+function tipsFor(x) {
+  const l = level(x.avg);
+  if (l === 3) return [];
+  const ranked = x.d.items.map(it => ({ it, v: state.a[it.id] })).sort((p, q) => p.v - q.v);
+  const out = [ranked[0].it.tip];
+  if (l === 1 && ranked[1] && ranked[1].v <= 3) out.push(ranked[1].it.tip);
+  return out;
+}
+function joinNames(arr) {
+  const n = arr.map(x => x.d.name);
+  return n.length < 2 ? n.join("") : n.length === 2 ? n.join(" and ") : n.slice(0, -1).join(", ") + ", and " + n[n.length - 1];
+}
+
+/* ============================================================
+   RENDERING
+   ============================================================ */
+function rail() {
+  const s = STEPS[state.step];
+  const idx = state.step - 1; // 0..7 for sections
+  let html = "";
+  if (s !== "intro") {
+    html += `<div class="rail" aria-hidden="true">` + SECTION_NAMES.map((_, i) =>
+      `<span class="${s === "results" || i < idx ? "done" : i === idx ? "now" : ""}"></span>`).join("") + `</div>`;
+    html += `<div class="railnote"><span>${s === "results" ? "Your results" : "Section " + (idx + 1) + " of " + SECTION_NAMES.length + ": " + SECTION_NAMES[idx]}</span></div>`;
+  }
+  $("#rail-holder").innerHTML = html;
+}
+
+function viewIntro() {
+  return `
+  <section class="panel stack">
+    <h2>Is this your year to apply?</h2>
+    <p>This takes about 8 minutes. You will check the basic eligibility requirements, then answer ${DOMAINS.reduce((n, d) => n + d.items.length, 0)} statements about how you work and lead. At the end you get a picture of where you are, a plan for what to do next, and a guided way to reflect that you can keep using.</p>
+    <div class="stack-sm">
+      <p><strong>How to answer.</strong> For each statement, choose how much it sounds like you. Think about roughly the past year or two, and about how you tend to be, not how you wish you were or what you think we want to hear. If an example does not come to mind right away, that is okay and it is useful to notice. There are no right answers, and nothing here is a pass or fail.</p>
+      <p class="muted">This is a self-check for your own planning. It stays on your device, is not part of the selection process, and does not predict whether you will be selected.</p>
+    </div>
+    <div class="nav"><span></span><button class="btn" data-act="next">Start</button></div>
+  </section>`;
+}
+
+function viewElig() {
+  const qs = ELIGIBILITY.map(q => `
+    <fieldset class="q">
+      <legend>${q.text}${q.help ? `<span class="help">${q.help}</span>` : ""}</legend>
+      <div class="choices">${q.options.map((o, i) => `
+        <div><input type="radio" name="e_${q.id}" id="e_${q.id}_${i}" value="${i}" ${state.a["e_" + q.id] === i ? "checked" : ""}>
+        <label for="e_${q.id}_${i}">${o.label}</label></div>`).join("")}
+      </div>
+    </fieldset>`).join("");
+  return `
+  <section class="panel stack">
+    <div class="stack-sm"><h2>Eligibility</h2><p class="muted">These are the basic requirements. They are checked first because they decide whether you can apply this year.</p></div>
+    <div>${qs}</div>
+    ${navHtml(ELIGIBILITY.length, "elig")}
+  </section>`;
+}
+
+function viewDomain(d) {
+  const qs = d.items.map(it => `
+    <fieldset class="q">
+      <legend>${it.t}${it.h ? `<span class="help">${it.h}</span>` : ""}</legend>
+      <div class="scale">${SCALE.map((lab, i) => `
+        <div style="display:contents"><input type="radio" name="${it.id}" id="${it.id}_${i + 1}" value="${i + 1}" ${state.a[it.id] === i + 1 ? "checked" : ""}>
+        <label for="${it.id}_${i + 1}">${lab}</label></div>`).join("")}
+      </div>
+    </fieldset>`).join("");
+  return `
+  <section class="panel stack">
+    <div class="stack-sm"><h2>${d.name}</h2><p class="muted">${d.blurb}</p><p class="fine">${d.id === "d6" ? "Think about your life as it is now and the next " + CONFIG.programMonths + " months." : "Think about roughly the past year or two, and how you tend to be."} Choose what fits best. There are no right answers.</p></div>
+    <div>${qs}</div>
+    ${navHtml(d.items.length, d.id)}
+  </section>`;
+}
+
+function viewSupport() {
+  const qs = SUPPORT.map(q => `
+    <fieldset class="q">
+      <legend>${q.text}</legend>
+      <div class="choices">${SUPPORT_OPTS.map(o => `
+        <div><input type="radio" name="s_${q.id}" id="s_${q.id}_${o.v}" value="${o.v}" ${state.a["s_" + q.id] === o.v ? "checked" : ""}>
+        <label for="s_${q.id}_${o.v}">${o.label}</label></div>`).join("")}
+      </div>
+    </fieldset>`).join("");
+  return `
+  <section class="panel stack">
+    <div class="stack-sm"><h2>Before you apply</h2><p class="muted">The application requires a signature from your employer and from your family. This is not scored. It only shapes your next steps.</p></div>
+    <div>${qs}</div>
+    ${navHtml(SUPPORT.length, "support", "See my results")}
+  </section>`;
+}
+
+function navHtml(total, key, nextLabel) {
+  return `<div class="nav">
+    <button class="btn ghost" data-act="back">Back</button>
+    <span class="count" id="count"></span>
+    <button class="btn" data-act="next" id="nextbtn" disabled>${nextLabel || "Next"}</button>
+  </div>`;
+}
+
+function answeredCount() {
+  const s = STEPS[state.step];
+  let keys = [];
+  if (s === "elig") keys = ELIGIBILITY.map(q => "e_" + q.id);
+  else if (s === "support") keys = SUPPORT.map(q => "s_" + q.id);
+  else { const d = DOMAINS.find(x => x.id === s); if (d) keys = d.items.map(i => i.id); }
+  return { done: keys.filter(k => state.a[k] !== undefined).length, total: keys.length };
+}
+function refreshNav() {
+  const c = $("#count"), b = $("#nextbtn");
+  if (!c || !b) return;
+  const { done, total } = answeredCount();
+  c.textContent = done + " of " + total + " answered";
+  b.disabled = done < total;
+}
+
+/* ---------- results ---------- */
+function viewIneligible() {
+  const { shorts } = eligibilityOutcome();
+  return `
+  <section class="panel stack">
+    <h2>You are not eligible to apply this year, and that may change</h2>
+    <div class="notice bad"><strong>Why</strong>${shorts.map(p => p.q.short).join(" ")}</div>
+    <p>Both requirements need to be met by the time you apply. If you are close, a future year may be right for you, and the time between now and then is worth using well.</p>
+    <div class="steps">
+      <div class="step"><h3>Learn what the program is like</h3><p>Attend ${link(CONFIG.resources.events)} to hear from alumni and staff and ask questions.</p></div>
+      <div class="step"><h3>Find an alumni mentor</h3><p>If you do not know an alum, contact ${contactLine()} and we will connect you with ${link(CONFIG.resources.mentor)}.</p></div>
+      <div class="step"><h3>Think this is a mistake?</h3><p>If your experience or residency does not fit neatly, contact ${contactLine()}. A person will review your situation.</p></div>
+    </div>
+    <div class="nav">
+      <button class="btn ghost" data-act="back">Change my answers</button>
+      <button class="btn" data-act="practice">Take the readiness check anyway</button>
+    </div>
+    <p class="fine">The readiness check is still useful as practice for a future year. Your results will note that you are not yet eligible.</p>
+  </section>`;
+}
+
+function guideHtml() {
+  const d = DOMAINS.find(x => x.id === state.focus);
+  const top = state.order.filter(x => level(x.avg) < 3).slice(0, 2).map(x => x.d.id);
+  return `
+    <div class="chips" role="group" aria-label="Choose a focus for your reflection">${state.order.map(x => `
+      <button type="button" class="chip" data-focus="${x.d.id}" aria-pressed="${x.d.id === state.focus}">${top.includes(x.d.id) ? "<small>Suggested</small>" : ""}${x.d.name}</button>`).join("")}
+    </div>
+    <ol class="stages">${STAGES.map((st, i) => `
+      <li class="stage"><h3><span class="st">${i + 1}</span>${st.k}</h3><p>${st.q(d)}</p></li>`).join("")}
+    </ol>
+    <div class="share">
+      <button type="button" class="btn ghost" data-act="copyguide">Copy these prompts</button>
+      <span id="guidecopied" class="count" role="status"></span>
+    </div>
+    <textarea id="guidetext" readonly hidden aria-label="Reflection prompts as text"></textarea>`;
+}
+function guideText() {
+  const d = DOMAINS.find(x => x.id === state.focus);
+  return ["Reflection with Gibbs' cycle: " + d.name, ""].concat(STAGES.map((st, i) => (i + 1) + ". " + st.k + "\n" + st.q(d) + "\n")).join("\n").trim();
+}
+
+function buildSummary(sc, elig, support, headline, steps) {
+  const lines = ["Ag Leadership Readiness Check (beta)", headline, "", "My picture"];
+  sc.dom.forEach(x => lines.push("- " + x.d.name + ": " + LEVEL_LABEL[level(x.avg)]));
+  const first = state.order.filter(x => level(x.avg) < 3).slice(0, 2);
+  if (first.length) lines.push("", "Start with: " + joinNames(first));
+  lines.push("", "Next steps");
+  steps.forEach(st => lines.push("- " + st.when + ": " + st.h));
+  lines.push("", "Eligibility: " + (elig.status === "ok" ? "meets requirements" : elig.status === "unsure" ? "needs confirmation" : "not yet eligible"));
+  lines.push("Employer support: " + support.emp, "Family support: " + support.fam);
+  return lines.join("\n");
+}
+
+function viewResults() {
+  const sc = scores();
+  const elig = eligibilityOutcome();
+  const ready = sc.overall >= CONFIG.passScore;
+  const sorted = [...sc.dom].sort((a, b) => a.avg - b.avg);
+  state.order = sorted;
+  if (!state.focus || !sorted.some(x => x.d.id === state.focus)) state.focus = sorted[0].d.id;
+  const growth = sorted.filter(x => level(x.avg) < 3).slice(0, 2);
+  const strong = sc.dom.filter(x => level(x.avg) === 3);
+  const steady = sc.dom.filter(x => level(x.avg) === 2);
+  const timing = sc.dom.find(x => x.d.id === "d6");
+  const R = CONFIG.resources;
+  const sup = { emp: state.a.s_emp, fam: state.a.s_fam };
+  const supOk = sup.emp === "yes" && sup.fam === "yes";
+  const supLabel = v => SUPPORT_OPTS.find(o => o.v === v).label;
+
+  let banner = "";
+  if (state.practice || elig.status === "short") {
+    banner = `<div class="notice bad"><strong>You are not yet eligible to apply</strong>${elig.shorts.map(p => p.q.short).join(" ")} Treat these results as practice for a future year.</div>`;
+  } else if (elig.status === "unsure") {
+    banner = `<div class="notice warn"><strong>Please confirm your eligibility first</strong>You were not sure whether you meet every requirement. Contact ${contactLine()} before you put time into an application.</div>`;
+  }
+
+  const headline = ready
+    ? (state.practice ? "You are in a strong place. Eligibility is the one thing left to sort out." : "You are in a good place to apply this year.")
+    : "This may be a year to build, and that is time well spent.";
+  const intro = ready
+    ? "Your answers point to real experience and habits the program looks for. Being ready does not mean being finished. People who reflect carefully on their own stories tend to do well, so the weeks ahead are a good time to do that thinking."
+    : "Your answers suggest that some areas are still taking shape. That is useful to know, and it is very normal. Many people find that a year of preparation makes their application, and their experience of the program, stronger. We would be glad to help. When you are ready, pick one small first step this month.";
+
+  let bringing;
+  if (strong.length === DOMAINS.length) bringing = "You are bringing real strength across all six areas.";
+  else if (strong.length) bringing = `You are bringing real strength in ${joinNames(strong)}.`;
+  else if (steady.length) bringing = `You are building on steady ground in ${joinNames(steady)}.`;
+  else bringing = "Every area has room to grow, and that is a very normal place to be.";
+  const growthLine = growth.length ? ` If you are wondering where to begin, ${joinNames(growth)} may be good places to start.` : " You have a solid base in every area, so your work is to turn it into clear stories.";
+
+  const steps = [];
+  if (level(timing.avg) === 1) {
+    steps.push({ warn: true, when: "This week", h: "Think through your time", p: `The ${CONFIG.programMonths}-month commitment looks like the biggest open question for you right now. It is worth exploring early: what would need to move, and who would you want to talk it through with?` });
+  }
+  if (ready) {
+    steps.push({ when: "This week", h: "Start the prework course", p: `Use ${link(R.prework)} to get ahead on what the application asks of you.` });
+    steps.push({ when: "This week", h: "Begin your reflection journal", p: "Pick a focus in the guide above and work through the six steps once. Many people find it helps to repeat it every week or two." });
+    if (!supOk) steps.push({ warn: true, when: "This week", h: "Talk with your employer and family", p: "The application asks for a signature from each, so it helps to have these conversations early, before you start writing. You might explain the time commitment and what you would adjust to make it work." });
+    steps.push({ when: "Before you apply", h: "Talk with an alum", p: `A conversation with someone who has been through it can sharpen your thinking. Contact ${contactLine()} and we will connect you with ${link(R.mentor)}.` });
+    steps.push({ when: "Before you apply", h: "Choose your stories", p: "Over time, it helps to have a specific moment in mind for each of the six areas, with the details and what changed afterward. The areas still taking shape are a good place to start." });
+  } else {
+    steps.push({ when: "This month", h: "Connect with an alumni mentor", p: `A mentor can be a great first step, since they can help you decide where to focus. If you do not know an alum, contact ${contactLine()} and we will gladly connect you with ${link(R.mentor)}.` });
+    steps.push({ when: "This month", h: "Attend a prospective applicant event", p: `Go to ${link(R.events)} to hear from alumni and staff and ask your questions about the program.` });
+    steps.push({ when: "This month", h: "Begin your reflection journal", p: "Pick a focus in the guide above and work through the six steps once, then repeat it every week or two. Many people find this is the most useful part of preparing." });
+    steps.push({ when: "Next few months", h: "Try one small thing in your first two areas", p: growth.length ? `You might start with ${joinNames(growth)}. The ideas in your picture above are only suggestions. Notice what you try and what changes.` : "The ideas in your picture above are only suggestions. Notice what you try and what changes." });
+    if (!supOk) steps.push({ warn: true, when: "Next few months", h: "Talk with your employer and family", p: "The application asks for a signature from each. You might share what you are working toward and begin talking about the time commitment." });
+    steps.push({ when: "Next few months", h: "Look over the prework course", p: `${link(R.prework, "The prework course")} will show you what the program expects, even if you apply next year.` });
+    steps.push({ when: "In 3 to 6 months", h: "Come back and retake this check", p: "See what has shifted once you have had time to try some of the steps above." });
+  }
+
+  const summary = buildSummary(sc, elig, { emp: supLabel(sup.emp), fam: supLabel(sup.fam) }, headline, steps);
+
+  return `
+  <section class="panel stack">
+    ${banner}
+    <h2>${headline}</h2>
+    <p>${intro}</p>
+    <p><strong>${bringing}</strong>${growthLine}</p>
+  </section>
+
+  <section class="panel stack">
+    <div class="stack-sm"><h2>Your picture today</h2><p class="muted">This is a snapshot of how you see yourself right now, based on your answers. It is not a grade, and it will change as you do. The ideas below are invitations, not requirements.</p></div>
+    <div class="picture">${sc.dom.map(x => {
+      const l = level(x.avg), tips = tipsFor(x);
+      return `<div class="prow">
+        <div class="top"><span class="nm">${x.d.name}</span><span class="lv">${dots(l)}${LEVEL_LABEL[l]}</span></div>
+        ${tips.length ? `<ul>${tips.map(t => `<li>${t}</li>`).join("")}</ul>` : `<p class="ok">This looks like a strength for you. It may help to think of a specific moment you could share, such as ${x.d.story}.</p>`}
+      </div>`; }).join("")}
+    </div>
+  </section>
+
+  <section class="panel stack">
+    <div class="stack-sm">
+      <h2>Reflect with Gibbs' cycle</h2>
+      <p class="muted">Gibbs' reflective cycle is a simple way to learn from an experience by writing your way through six steps. Choose a focus below, think of a real experience that fits, and if you can, give it 20 to 30 minutes. Over time, your notes can become the raw material for your own stories, in an application or anywhere else.</p>
+    </div>
+    <div id="guide" class="stack">${guideHtml()}</div>
+  </section>
+
+  <section class="panel stack">
+    <h2>Your next steps</h2>
+    <div class="steps">${steps.map(s => `<div class="step ${s.warn ? "warn" : ""}"><span class="when">${s.when}</span><h3>${s.h}</h3><p>${s.p}</p></div>`).join("")}</div>
+  </section>
+
+  <section class="panel stack-sm">
+    <div class="share">
+      <button class="btn" data-act="copy">Copy my results</button>
+      <button class="btn ghost" data-act="restart">Start over</button>
+      <span id="copied" class="count" role="status"></span>
+    </div>
+    <textarea id="summary" readonly hidden aria-label="Your results as text">${summary}</textarea>
+    <p class="fine">Your answers stay on this page and are not sent anywhere.</p>
+  </section>`;
+}
+
+/* ============================================================
+   FLOW
+   ============================================================ */
+function render() {
+  const s = STEPS[state.step];
+  let html;
+  if (s === "intro") html = viewIntro();
+  else if (s === "elig") html = viewElig();
+  else if (s === "support") html = viewSupport();
+  else if (s === "results") html = (state.inelig && !state.practice) ? viewIneligible() : viewResults();
+  else html = viewDomain(DOMAINS.find(d => d.id === s));
+  $("#main").innerHTML = html;
+  rail();
+  refreshNav();
+  const h = $("#main h2");
+  if (h) { h.setAttribute("tabindex", "-1"); if (state.step > 0) h.focus({ preventScroll: true }); }
+  if (state.step > 0) window.scrollTo({ top: 0 });
+}
+
+document.addEventListener("change", e => {
+  const t = e.target;
+  if (t.type !== "radio") return;
+  if (t.name.startsWith("e_")) state.a[t.name] = Number(t.value);
+  else if (t.name.startsWith("s_")) state.a[t.name] = t.value;
+  else state.a[t.name] = Number(t.value);
+  refreshNav();
+});
+
+function copyFrom(ta, note, done) {
+  const fallback = () => { ta.hidden = false; ta.select(); note.textContent = "Select the text above to copy it."; };
+  try { navigator.clipboard.writeText(ta.value).then(() => { note.textContent = done; }, fallback); } catch (err) { fallback(); }
+}
+
+document.addEventListener("click", e => {
+  const chip = e.target.closest("[data-focus]");
+  if (chip) { state.focus = chip.dataset.focus; $("#guide").innerHTML = guideHtml(); const again = $('[data-focus="' + state.focus + '"]'); if (again) again.focus(); return; }
+  const b = e.target.closest("[data-act]");
+  if (!b) return;
+  const act = b.dataset.act, s = STEPS[state.step];
+  if (act === "next") {
+    if (s === "elig") {
+      const o = eligibilityOutcome();
+      state.inelig = o.status === "short";
+      if (state.inelig && !state.practice) { state.step = STEPS.indexOf("results"); render(); return; }
+    }
+    state.step = Math.min(state.step + 1, STEPS.length - 1);
+    render();
+  } else if (act === "back") {
+    if (s === "results" && state.inelig && !state.practice) state.step = STEPS.indexOf("elig");
+    else state.step = Math.max(state.step - 1, 0);
+    render();
+  } else if (act === "practice") {
+    state.practice = true; state.step = STEPS.indexOf("d1"); render();
+  } else if (act === "restart") {
+    state.step = 0; state.a = {}; state.practice = false; state.inelig = false; state.focus = null; state.order = []; render();
+  } else if (act === "copy") {
+    copyFrom($("#summary"), $("#copied"), "Copied.");
+  } else if (act === "copyguide") {
+    const ta = $("#guidetext"); ta.value = guideText();
+    copyFrom(ta, $("#guidecopied"), "Copied.");
+  }
+});
+
+render();
+</script>
+
+</body>
+</html>
